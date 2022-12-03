@@ -1,0 +1,35 @@
+   //285
+     override fun error(code: String?, msg: String?, details: Any?) {
+                                Log.e(LOG_TAG, "invokeMethod - error: $msg")
+                                // ignore error and extract normally
+                                deferred.complete(ExtractOperation.extract)
+                            }
+
+                            268
+                                    uiScope.launch {
+                        methodChannel?.invokeMethod("progress", map, object : MethodChannel.Result {
+
+                            override fun success(result: Any?) {
+                                Log.i(LOG_TAG, "invokeMethod - success: $result")
+                                when (result) {
+                                    "cancel" -> {
+                                        deferred.complete(ExtractOperation.cancel)
+                                    }
+                                    "skip" -> {
+                                        deferred.complete(ExtractOperation.skip)
+                                    }
+                                    else -> {
+                                        deferred.complete(ExtractOperation.extract)
+                                    }
+                                }
+                            }
+
+                       
+
+                            override fun notImplemented() {
+                                Log.e(LOG_TAG, "invokeMethod - notImplemented")
+                                // ignore error and extract normally
+                                deferred.complete(ExtractOperation.extract)
+                            }
+                        })
+                    }
